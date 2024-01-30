@@ -12,16 +12,19 @@ The build takes advantage of any reusable layer from previously built images.
 Options:
 
     -h              Show this help message.
+    -a              Build for arm64.
     -p              Publish each built image to the GitHub Container Registry
                     (you need to be logged in to ghcr.io with the appropriate
                     permissions for this to work)."
 
 helpflag=
+targetplatform="linux/amd64"
 publishflag=
 
 while getopts hp name; do
     case $name in
         h) helpflag=1 ;;
+        a) targetplatform="linux/arm64" ;;t
         p) publishflag=1 ;;
         *) error "Invalid option. Use the -h flag for more information." ;;
     esac
@@ -55,7 +58,7 @@ docker-build() {
         --build-arg BUILDKIT_INLINE_CACHE=1 \
         --build-arg FROM="$from" \
         --cache-from "$(image-name "$2")" \
-        --platform linux/amd64,linux/arm64
+        --platform "$targetplatform"
         --tag "$target" .
 
     if [[ -n $publishflag ]]; then
