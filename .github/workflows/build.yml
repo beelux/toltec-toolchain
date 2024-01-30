@@ -30,6 +30,7 @@ jobs:
       - name: Setup Docker
         run: |
           brew install docker docker-buildx
+          colima start
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Build and publish images
