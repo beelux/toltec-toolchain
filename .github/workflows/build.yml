@@ -43,6 +43,12 @@ jobs:
           </plist>
           EOF
           codesign --sign - --entitlements entitlements.xml --force /opt/homebrew/bin/qemu-system-aarch64
+      - name: Colima Version
+        run: |
+          colima version && limactl --version && qemu-img --version
+      - name: Colima Status
+        run: |
+          colima status
       - name: Start Docker container runtimes
         run: |
           colima start
