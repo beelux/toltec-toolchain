@@ -46,6 +46,10 @@ jobs:
       - name: Start Docker container runtimes
         run: |
           colima start
+      - name: Print out Docker debug
+        if: always()
+        run: |
+          cat /Users/runner/.colima/_lima/colima/ha.stderr.log
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Build and publish images
