@@ -44,6 +44,7 @@ jobs:
           EOF
           codesign --sign - --entitlements entitlements.xml --force /opt/homebrew/bin/qemu-system-aarch64
       - name: Start Docker container runtimes
+        run: |
           colima start
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
