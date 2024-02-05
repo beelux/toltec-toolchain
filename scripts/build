@@ -9,9 +9,14 @@ Build the Docker images under the IMAGESDIR directory.
 Label each built image with the given VERSION number (default: latest).
 The build takes advantage of any reusable layer from previously built images.
 
+You can build individual images by specifying the source image and the image
+you wish to build.
+
 Options:
 
     -h              Show this help message.
+    -s IMAGE        Source IMAGE, used as based for the image being built.
+    -i IMAGE        Only build IMAGE and create 
     -p              Publish each built image to the GitHub Container Registry
                     (you need to be logged in to ghcr.io with the appropriate
                     permissions for this to work)."
@@ -19,10 +24,14 @@ Options:
 helpflag=
 publishflag=
 
-while getopts hp name; do
+unset imageflag
+
+while getopts hpi: name; do
     case $name in
         h) helpflag=1 ;;
         p) publishflag=1 ;;
+        s) sourceimageflag="$OPTARG" ;;
+        i) imageflag="$OPTARG" ;;
         *) error "Invalid option. Use the -h flag for more information." ;;
     esac
 done
@@ -40,6 +49,16 @@ fi
 
 if [[ $# -gt 2 ]]; then
     error "Extraneous arguments. Use the -h flag for more information."
+fi
+
+if [[ -n "$imageflag" ]] && [[ -z "$sourceimageflag" ]];
+then
+    error "Missing source image. Use the -h flag for more information."
+fi
+
+if [[ -n "$sourceimageflag" ]] && [[ -z "$imageflag" ]];
+then
+    error "Missing image name. Use the -h flag for more information."
 fi
 
 imagesdir="$1"
@@ -62,6 +81,14 @@ docker-build() {
         docker image push "$target"
     fi
 }
+
+if [[ -n "$imageflag" ]] && [[ -n "$sourceimageflag" ]];
+then
+    pushd "$imagesdir/$imageflag"
+    docker-build "$sourceimageflag" "$imageflag"
+    popd
+    exit
+fi
 
 pushd "$imagesdir"/toolchain
 docker-build toolchain toolchain
