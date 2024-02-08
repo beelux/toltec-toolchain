@@ -6,8 +6,8 @@ on:
       - v2.x
       - v3.x
 jobs:
-  build:
-    name: Publish latest
+  build-toolchain:
+    name: Build toolchain
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,4 +18,45 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Build images
         run: |
-          ./scripts/build .
+          ./scripts/build -i toolchain .
+  build-base:
+    name: Build base
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout the Git repository
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Build images
+        run: |
+          ./scripts/build -i base .
+  get-other-image-names:
+    name: Get other image names
+    runs-on: ubuntu-latest
+    permissions:
+        contents: read
+    steps:
+        - name: Checkout the Git repository
+          uses: actions/checkout@v3
+        - id: images-matrix
+          run: |
+            jq '.images | to_entries | map(select(.value."stage3-image"))[].key' images.json >> $GITHUB_OUTPUT
+  build-other:
+    name: Build other images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: [build-toolchain, build-base, get-other-image-names]
+    strategy:
+      matrix: ${{ fromJson(needs.get-other-image-names.outputs.images-matrix) }}
+      fail-fast: false
+    steps:
+      - name: Checkout the Git repository
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Build images
+        run: |
+          ./scripts/build -i ${{ matrix.image }} .
