@@ -48,7 +48,9 @@ jobs:
           uses: actions/checkout@v3
         - id: images-matrix
           run: |
+            echo 'JSON_CONTENT<<EOF' >> $GITHUB_OUTPUT
             jq '.images | to_entries | map(select(.value."stage3-image"))[].key' images.json >> $GITHUB_OUTPUT
+            echo 'EOF' >> $GITHUB_OUTPUT
   build-other:
     name: Publish other images
     runs-on: ubuntu-latest
