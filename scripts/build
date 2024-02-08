@@ -59,6 +59,8 @@ docker-build() {
     from="$(image-name $(from-image "$1" "$imagesdir"/images.json) "$version")"
     target="$(image-name "$1" "$version")"
     status "Building image '$target'"
+    status "From: '$from'"
+    status "Target: '$target'"
     docker buildx build \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
         --build-arg FROM="$from" \
