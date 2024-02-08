@@ -5,6 +5,9 @@ on:
       - v1.x
       - v2.x
       - v3.x
+  push:
+    branches:
+      - v3.x-testing
 jobs:
   build-toolchain:
     name: Build toolchain
