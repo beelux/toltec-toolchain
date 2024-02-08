@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    needs: build-toolchain
     steps:
       - name: Checkout the Git repository
         uses: actions/checkout@v3

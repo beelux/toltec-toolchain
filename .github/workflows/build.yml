@@ -26,6 +26,7 @@ jobs:
   build-base:
     name: Publish base
     runs-on: ubuntu-latest
+    needs: build-toolchain
     steps:
       - name: Checkout the Git repository
         uses: actions/checkout@v3
