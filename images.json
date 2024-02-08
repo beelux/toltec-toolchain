@@ -1,0 +1,32 @@
+{
+    "images": {
+        "toolchain": {
+            "from": "toolchain",
+            "stage3-image": false
+        },
+        "base": {
+            "from": "toolchain",
+            "stage3-image": false
+        },
+        "golang": {
+            "from": "base",
+            "stage3-image": true
+        },
+        "python": {
+            "from": "base",
+            "stage3-image": true
+        },
+        "qt": {
+            "from": "base",
+            "stage3-image": true
+        },
+        "rust": {
+            "from": "base",
+            "stage3-image": true
+        },
+        "dotnet6": {
+            "from": "toolchain",
+            "stage3-image": true
+        }
+    }
+}

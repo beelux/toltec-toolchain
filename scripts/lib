@@ -28,3 +28,12 @@ status() {
 image-name() {
     echo "ghcr.io/toltec-dev/$1:${2:-latest}"
 }
+
+# Get from image for a given image name
+#
+# Arguments:
+# $1 - Name of the image
+# $2 - Path to the images.json file
+from-image() {
+    jq -r .images."$1".from "$2"
+}
